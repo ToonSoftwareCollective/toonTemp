@@ -22,6 +22,7 @@ App {
 	property url 	 toonTemptile1Url4 : "ToonTempTile4.qml"
 	property url 	 toonTemptile1Url5 : "ToonTempTile5.qml"
 	property url 	 toonTemptile1Url6 : "ToonTempTile6.qml"
+
 	
 	//property url 	 thumbnailIcon: "qrc:/tsc/temperatureLoggerTray_orig.png"
 	property url 	 thumbnailIcon: ("qrc://apps/airQuality/drawables/temperature-thumb.svg")
@@ -63,6 +64,10 @@ App {
 	
 	property variant dht : [false,false,false,false,false,false]
 	
+    property variant domoticzActive : [false,false,false,false,false,false]
+    property string 	domoticzURL : "http://192.168.10.185:8080"
+	property variant	domoticzIDX :[0,0,0,0,0,0]
+	
 
 	FileIO {id: toonTemp_fiveminuteValues1;	source: "file:///mnt/data/tsc/appData/toonTemp_fiveminuteValues1.txt"}
 	FileIO {id: toonTemp_fiveminuteValues2;	source: "file:///mnt/data/tsc/appData/toonTemp_fiveminuteValues2.txt"}
@@ -79,9 +84,6 @@ App {
 //SIGNALS//
 signal temperaturesUpdated1;
 signal temperaturesUpdated2;
-signal temperaturesUpdated3;
-signal temperaturesUpdated4;
-signal temperaturesUpdated5;
 
 //SIGNALS END//	
 
@@ -91,19 +93,13 @@ signal temperaturesUpdated5;
 		registry.registerWidget("screen", toonTempConfigScreenUrl, this, "toonTempConfigScreen");
 		registry.registerWidget("screen", toonTempScreenUrl, this, "toonTempScreen");
 //TILE//
-registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Tuin"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url3, this, null, {thumbLabel: qsTr("Test"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url4, this, null, {thumbLabel: qsTr("Kast"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url5, this, null, {thumbLabel: qsTr("Huiskamer"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Garage"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 
 //TILE END//
 //SCREEN//
 registry.registerWidget("screen", toonTempScreenUrl1, this, "toonTempScreen1");
 registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
-registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
-registry.registerWidget("screen", toonTempScreenUrl4, this, "toonTempScreen4");
-registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
 
 //SCREEN END//
 	}
@@ -117,11 +113,19 @@ registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
             sensorNames     = userSettingsJSON['sensorNames'].slice()
             sensorIPs       = userSettingsJSON['sensorIPs'].slice()
             sensorActive     = userSettingsJSON['sensorActive'].slice()
+			
+			domoticzActive  = userSettingsJSON['domoticzActive'].slice()
+			domoticzURL     = userSettingsJSON['domoticzURL'];
+			domoticzIDX     = userSettingsJSON['domoticzIDX'].slice()
+	
         } catch(e) {
 			sensorCount = 0
 			sensorNames = ["a","b","c","d","e","f"]
 			sensorIPs = ["192.168.10.138","192.168.10.138","192.168.10.138","192.168.10.138","192.168.10.138","192.168.10.138"]
 			sensorActive = [false,false,false,false,false,false]
+			domoticzActive  = [false,false,false,false,false,false]
+			domoticzURL     = "http://192.168.10.18:8080"
+			domoticzIDX     = [0,0,0,0,0,0]
         }
 		
 		lastSensor = 0
@@ -188,10 +192,66 @@ registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
 		for(var number in sensorActive){
 			if (sensorActive[number]){
 				if (debugOutput) console.log("*********toonTemp sensor is active number :" + number)
-				readTemperature(number, sensorIPs[number])
+				if(!domoticzActive[number]){
+					readTemperature(number, sensorIPs[number])
+				}else{
+					if(domoticzIDX[number]>0){
+						readDomoticz(number,domoticzIDX[number])
+					}
+				}
 			}
 		}
     }
+	
+	function readDomoticz(number, IDX) {
+		if (debugOutput) console.log("*********toonTemp start readDomoticz url: " + domoticzURL + "/json.htm?type=devices&rid=" + IDX)
+		var http = new XMLHttpRequest()
+		http.open("GET", domoticzURL + "/json.htm?type=devices&rid=" + IDX, true)
+		http.onreadystatechange = function() {
+			if (http.readyState == XMLHttpRequest.DONE) {
+				if (http.status === 200 || http.status === 300  || http.status === 302) {
+						var JsonString = http.responseText
+						if (debugOutput) console.log("*********toonTemp readDomoticz  JsonString: "  + JsonString)
+						var JsonObject= JSON.parse(JsonString);
+
+						if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Data: "  + JsonObject.result[0].Data)
+						
+						if (JsonObject.status == "OK"){
+							tempCurrent[number] = JsonObject.result[0].Temp
+							if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
+							if(JsonString.indexOf("Humidity")>-1){
+								dht[number] = true
+								humCurrent[number] = JsonObject.result[0].Humidity
+								hidCurrent[number] = JsonObject.result[0].Temp
+							}else{
+								dht[number] = false
+							}
+							if (debugOutput) console.log("*********toonTemp readTemperature  humCurrent[" + number + "]: "  + humCurrent[number])
+							if (debugOutput) console.log("*********toonTemp readTemperature  hidCurrent[" + number + "]: "  + hidCurrent[number])
+							if (debugOutput) console.log("*********toonTemp readTemperature  tempCurrent[" + number + "]: "  + tempCurrent[number])
+							if (debugOutput) console.log("*********toonTemp readTemperature  dtime : " + dtime)
+							if (debugOutput) console.log("*********toonTemp readTemperature  sensorCount: " +sensorCount)
+							if (debugOutput) console.log("*********toonTemp readTemperature  number: " + number)
+							if (debugOutput) console.log("*********toonTemp readTemperature  lastSensor: " + lastSensor)						
+							if (number == lastSensor){
+								if (debugOutput) console.log("*********toonTemp readTemperature  last sensor: " + number)
+								parseData()
+							}
+						}else {
+							if (debugOutput) console.log("*********toonTemp readTemperature  get error: " + http.status)
+							tempCurrent[number] = -99
+							parseData()
+						}
+
+				} else {
+                   	if (debugOutput) console.log("*********toonTemp readTemperature  get error: " + http.status)
+						tempCurrent[number] = -99
+						parseData()
+                }
+			}
+		}
+		http.send();
+	}
 	
 	function readTemperature(number, IPadres) {
 		if (debugOutput) console.log("*********toonTemp start readtempetature url: " + "http://" + IPadres + "/temperatuur.html")
@@ -372,7 +432,10 @@ registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
             "sensorCount":      sensorCount,
             "sensorNames":      sensorNames,
             "sensorIPs":        sensorIPs,
-            "sensorActive":     sensorActive
+            "sensorActive":     sensorActive,
+			"domoticzActive":     domoticzActive,
+			"domoticzIDX":     domoticzIDX,
+			"domoticzURL":     domoticzURL,
         }
 		if (debugOutput) console.log("*********toonTemp saveSettings writing json : " + JSON.stringify(tmpUserSettingsJSON));
 		userSettingsFile.write(JSON.stringify(tmpUserSettingsJSON))
@@ -423,6 +486,12 @@ registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
 		}
     }
 }
+
+
+
+
+
+
 
 
 
