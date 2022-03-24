@@ -10,6 +10,8 @@ Tile {
 	property string toonHidStr : app.hidCurrent[index]
 	property string sensorNamesStr : app.sensorNames[index]
 	property bool isDHT : app.dht[index]
+	property string unit : app.units[index]
+
 	
 	
 	onClicked: {
@@ -25,6 +27,7 @@ Tile {
 		toonHumStr = app.humCurrent[index]
 		toonHidStr = app.hidCurrent[index]
 		sensorNamesStr = app.sensorNames[index]
+		unit = app.units[index]
 		isDHT = app.dht[index]
 	}
 
@@ -43,12 +46,12 @@ Tile {
 
     Text {
         id: degree1
-        text: "o"
+        text: unit
         color: dimmableColors.clockTileColor
         anchors {
             top: toonTemp.top
             left: toonTemp.right
-            leftMargin: isNxt ? 6 : 5
+            leftMargin: isNxt ? 16 : 5
         }
         font.pixelSize:  isNxt ? 32 : 25
         font.family: qfont.regular.name

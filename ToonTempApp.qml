@@ -6,7 +6,7 @@ import FileIO 1.0
 App {
 
 	id: toonTempApp
-	property bool debugOutput : false
+	property bool debugOutput : true
 	
 	property string popupString : "Temp instellen en herstarten als nodig" + "..."
 	property url 	tempRebootPopupUrl: "TempRebootPopup.qml"
@@ -59,6 +59,7 @@ App {
 	property variant tempCurrent :[-99,-99,-99,-99,-99,-99]	
 	property variant humCurrent :[0,0,0,0,0,0]
 	property variant hidCurrent :[0,0,0,0,0,0]
+	property variant units :["","","","","",""]
 	
 	property variant tempDATA :[0,1,2,3,4,5,6,7]
 	
@@ -217,15 +218,26 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 						if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Data: "  + JsonObject.result[0].Data)
 						
 						if (JsonObject.status == "OK"){
-							tempCurrent[number] = JsonObject.result[0].Temp
-							if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
-							if(JsonString.indexOf("Humidity")>-1){
-								dht[number] = true
-								humCurrent[number] = JsonObject.result[0].Humidity
-								hidCurrent[number] = JsonObject.result[0].Temp
+							if(JsonString.indexOf("Temp")>-1){
+								units[number]="o"
+								tempCurrent[number] = JsonObject.result[0].Temp
+								if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
+								if(JsonString.indexOf("Humidity")>-1){
+									dht[number] = true
+									humCurrent[number] = JsonObject.result[0].Humidity
+									hidCurrent[number] = JsonObject.result[0].Temp
+								}else{
+									dht[number] = false
+								}
 							}else{
-								dht[number] = false
+								var checkData = JsonObject.result[0].Data
+								if(checkData != ""){
+									tempCurrent[number] = JsonObject.result[0].Data.split(" ")[0]
+									units[number]= JsonObject.result[0].Data.split(" ")[1]
+									if (debugOutput) console.log("*********toonTemp readDomoticz  units[" + number + "]: "  + units[number])
+								} 
 							}
+
 							if (debugOutput) console.log("*********toonTemp readTemperature  humCurrent[" + number + "]: "  + humCurrent[number])
 							if (debugOutput) console.log("*********toonTemp readTemperature  hidCurrent[" + number + "]: "  + hidCurrent[number])
 							if (debugOutput) console.log("*********toonTemp readTemperature  tempCurrent[" + number + "]: "  + tempCurrent[number])
