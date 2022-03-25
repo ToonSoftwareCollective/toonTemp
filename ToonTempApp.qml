@@ -6,7 +6,7 @@ import FileIO 1.0
 App {
 
 	id: toonTempApp
-	property bool debugOutput : true
+	property bool debugOutput : false
 	
 	property string popupString : "Temp instellen en herstarten als nodig" + "..."
 	property url 	tempRebootPopupUrl: "TempRebootPopup.qml"
@@ -498,6 +498,10 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 		}
     }
 }
+
+
+
+
 
 
 

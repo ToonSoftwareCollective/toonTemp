@@ -1,3 +1,6 @@
+1.4.1
+- Domoticz units changed on tile
+
 1.4.0
 - Domoticz custom sensors added
 
