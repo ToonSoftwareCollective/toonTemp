@@ -6,7 +6,7 @@ import FileIO 1.0
 App {
 
 	id: toonTempApp
-	property bool debugOutput : false
+	property bool debugOutput : true
 	
 	property string popupString : "Temp instellen en herstarten als nodig" + "..."
 	property url 	tempRebootPopupUrl: "TempRebootPopup.qml"
@@ -16,6 +16,7 @@ App {
 	//property url     toonTempMenuIconUrl: "qrc:/tsc/temperatureLoggerTray_orig.png"
         property url     toonTempMenuIconUrl: ("qrc://apps/weather/drawables/Icon-Temperature.svg")
 
+	property url 	 toonTemptile1Url0 :  "ToonTempTile0.qml"
 	property url 	 toonTemptile1Url1 :  "ToonTempTile1.qml"
 	property url 	 toonTemptile1Url2 : "ToonTempTile2.qml"
 	property url 	 toonTemptile1Url3 : "ToonTempTile3.qml"
@@ -82,6 +83,7 @@ App {
 	FileIO {id: appFile;	source: "file:///HCBv2/qml/apps/toonTemp/ToonTempApp.qml"}
 
 
+signal temperaturesUpdated0;
 //SIGNALS//
 signal temperaturesUpdated1;
 signal temperaturesUpdated2;
@@ -93,6 +95,8 @@ signal temperaturesUpdated2;
 		registry.registerWidget("popup", tempRebootPopupUrl, toonTempApp, "tempRebootPopup");
 		registry.registerWidget("screen", toonTempConfigScreenUrl, this, "toonTempConfigScreen");
 		registry.registerWidget("screen", toonTempScreenUrl, this, "toonTempScreen");
+		registry.registerWidget("tile", toonTemptile1Url0, this, null, {thumbLabel: qsTr("toonTemp"), thumbIcon: thumbnailIcon, thumbCategory: "general", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+
 //TILE//
 registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Garage"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
@@ -218,7 +222,9 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 						if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Data: "  + JsonObject.result[0].Data)
 						
 						if (JsonObject.status == "OK"){
-							if(JsonString.indexOf("Temp")>-1){
+							if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Type.toLowerCase(): "  + JsonObject.result[0].Type.toLowerCase())
+							if(JsonObject.result[0].Type.toLowerCase().indexOf("temp")>-1){
+								if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Type.toLowerCase() found type Temp")
 								units[number]="o"
 								tempCurrent[number] = JsonObject.result[0].Temp
 								if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
@@ -350,6 +356,7 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 				if (debugOutput) console.log("*********toonTemp parseData() tempCurrent[" + number + "] : " + parseFloat(tempCurrent[number]))
 				tempDATA[number][minsfromfiveIndex] = parseFloat(tempCurrent[number])
 				if (debugOutput) console.log("*********toonTemp parseData() tempDATA[" + number + "][" + minsfromfiveIndex + "] : " + tempDATA[number][minsfromfiveIndex])
+				temperaturesUpdated0()
 				if (number == 0){temperaturesUpdated1()}
 				if (number == 1){temperaturesUpdated2()}
 				if (number == 2){temperaturesUpdated3()}
@@ -498,6 +505,12 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 		}
     }
 }
+
+
+
+
+
+
 
 
 

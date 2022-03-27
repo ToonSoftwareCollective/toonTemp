@@ -180,6 +180,5 @@ Tile {
 		horizontalAlignment: Text.AlignHCenter
 		font.pixelSize: qfont.tileTitle
 		font.family: qfont.regular.name
-		visible: !dimState
 	}
 }
