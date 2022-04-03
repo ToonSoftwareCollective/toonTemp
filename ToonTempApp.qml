@@ -145,7 +145,7 @@ registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 		for(var number in sensorActive){
 			if (sensorActive[number]){
 			    if (debugOutput) console.log("*********toonTemp Component.onCompleted writing -99 to all active databases")
-				tempDATA[(number)]= emptyArray
+				tempDATA[(number)]= [].concat(emptyArray)
 				if (debugOutput) console.log("*********toonTemp Component.onCompleted written to database tempDATA[" + number + "] : " + tempDATA[(number)])
 				lastSensor = number
 			}

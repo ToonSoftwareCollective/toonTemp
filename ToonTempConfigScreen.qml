@@ -344,7 +344,7 @@ Screen {
 		selected : false; 
 		textColor : "black";
 		onClicked: {
-			qkeyboard.open("Example of valid URL: http://192.168.10.185:8080 : " +domoticzURL.buttonText , domoticzURL.buttonText, savedomoticzURL)
+			qkeyboard.open("Example of valid URL: http://192.168.10.185:8080 :\n" +domoticzURL.buttonText , domoticzURL.buttonText, savedomoticzURL)
 		}
 		anchors {
 			left: domURLText.left
