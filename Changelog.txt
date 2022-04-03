@@ -1,3 +1,6 @@
+1.4.4
+- emptying of arrays solved, configscreen 2 lines, maxformatted >140 changed
+
 1.4.3
 - bug in graph solved
 

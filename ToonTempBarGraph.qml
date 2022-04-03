@@ -140,7 +140,7 @@ Item {
 		if(iMax >= 70 & iMax < 80) maxFormatted = 80
 		if(iMax >= 80 & iMax < 90) maxFormatted = 90
 		if(iMax >= 90 & iMax < 100)	maxFormatted = 100
-		if(iMax >= 100)	maxFormatted = 140
+		if(iMax >= 100) maxFormatted = ( Math.round(iMax / 100) + 1) * 100
 		if (minFormatted<0) freezeFormatted =-1*minFormatted
 		
 		if (maxFormatted == 5 & iMax<=0){maxFormatted = 0} 
