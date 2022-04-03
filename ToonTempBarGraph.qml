@@ -110,7 +110,7 @@ Item {
 			if(iMin >= 31 & iMin < 36) minFormatted = 30
 			if(iMin >= 36 & iMin < 41) minFormatted = 35
 			if(iMin >= 40 & iMin < 46) minFormatted = 40
-			if(iMin >= 31 & iMin < 51) minFormatted = 45
+			if(iMin >= 45 & iMin < 51) minFormatted = 45
 			if(iMin >= 51 & iMin < 61) minFormatted = 50
 			if(iMin >= 61 & iMin < 71) minFormatted = 60
 			if(iMin >= 71 & iMin < 81) minFormatted = 70

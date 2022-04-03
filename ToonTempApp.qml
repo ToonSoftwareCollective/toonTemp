@@ -6,7 +6,7 @@ import FileIO 1.0
 App {
 
 	id: toonTempApp
-	property bool debugOutput : true
+	property bool debugOutput : false
 	
 	property string popupString : "Temp instellen en herstarten als nodig" + "..."
 	property url 	tempRebootPopupUrl: "TempRebootPopup.qml"
@@ -87,6 +87,7 @@ signal temperaturesUpdated0;
 //SIGNALS//
 signal temperaturesUpdated1;
 signal temperaturesUpdated2;
+signal temperaturesUpdated3;
 
 //SIGNALS END//	
 
@@ -100,11 +101,13 @@ signal temperaturesUpdated2;
 //TILE//
 registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Garage"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+registry.registerWidget("tile", toonTemptile1Url3, this, null, {thumbLabel: qsTr("Testviawww"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 
 //TILE END//
 //SCREEN//
 registry.registerWidget("screen", toonTempScreenUrl1, this, "toonTempScreen1");
 registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
+registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 
 //SCREEN END//
 	}
@@ -505,6 +508,11 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 		}
     }
 }
+
+
+
+
+
 
 
 
