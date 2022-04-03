@@ -10,6 +10,7 @@ Tile {
 	property string toonHidStr : app.hidCurrent[index]
 	property string sensorNamesStr : app.sensorNames[index]
 	property bool isDHT : app.dht[index]
+	property string unit : app.units[index]
 	
 	
 	onClicked: {
@@ -25,7 +26,28 @@ Tile {
 		toonHumStr = app.humCurrent[index]
 		toonHidStr = app.hidCurrent[index]
 		sensorNamesStr = app.sensorNames[index]
+		unit = app.units[index]
 		isDHT = app.dht[index]
+		var textwidth
+		if(isNxt){
+			textwidth = ((parent.width/2) - (toonTempStr.length*32))/(1+(unit.length*4))
+			if(typeof textwidth == 'number'){
+				if (textwidth <32){
+					domunits.font.pixelSize = textwidth
+				}else{
+					domunits.font.pixelSize = 32
+				}
+			}
+		}else{
+			textwidth = ((parent.width/2) - (toonTempStr.length*25))/(1+(unit.length*4))
+			if(typeof textwidth == 'number'){
+				if (textwidth <25){
+					domunits.font.pixelSize = textwidth
+				}else{
+					domunits.font.pixelSize = 25
+				}
+			}		
+		}
 	}
 
 //IF NOT DHT SENSOR
@@ -43,7 +65,7 @@ Tile {
 
     Text {
         id: degree1
-        text: "o"
+        text: unit
         color: dimmableColors.clockTileColor
         anchors {
             top: toonTemp.top
@@ -52,7 +74,24 @@ Tile {
         }
         font.pixelSize:  isNxt ? 32 : 25
         font.family: qfont.regular.name
-		visible: !isDHT
+	visible: !isDHT & (unit == "o")
+    }
+
+    Text {
+        id: domunits
+        text: unit
+        color: dimmableColors.clockTileColor
+        anchors {
+            //bottom: toonTemp.bottom
+	    verticalCenter: toonTemp.verticalCenter 
+
+            left: toonTemp.right
+            leftMargin: isNxt ? 16 : 5
+        }  
+        font.pixelSize:  isNxt ? 150/unit.length() : 25
+        font.family: qfont.regular.name
+		visible: !isDHT & (unit != "o")
+
     }
 
 
@@ -140,6 +179,5 @@ Tile {
 		horizontalAlignment: Text.AlignHCenter
 		font.pixelSize: qfont.tileTitle
 		font.family: qfont.regular.name
-		visible: !dimState
 	}
 }

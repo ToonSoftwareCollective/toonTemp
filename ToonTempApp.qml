@@ -16,6 +16,7 @@ App {
 	//property url     toonTempMenuIconUrl: "qrc:/tsc/temperatureLoggerTray_orig.png"
         property url     toonTempMenuIconUrl: ("qrc://apps/weather/drawables/Icon-Temperature.svg")
 
+	property url 	 toonTemptile1Url0 :  "ToonTempTile0.qml"
 	property url 	 toonTemptile1Url1 :  "ToonTempTile1.qml"
 	property url 	 toonTemptile1Url2 : "ToonTempTile2.qml"
 	property url 	 toonTemptile1Url3 : "ToonTempTile3.qml"
@@ -59,6 +60,7 @@ App {
 	property variant tempCurrent :[-99,-99,-99,-99,-99,-99]	
 	property variant humCurrent :[0,0,0,0,0,0]
 	property variant hidCurrent :[0,0,0,0,0,0]
+	property variant units :["","","","","",""]
 	
 	property variant tempDATA :[0,1,2,3,4,5,6,7]
 	
@@ -81,9 +83,11 @@ App {
 	FileIO {id: appFile;	source: "file:///HCBv2/qml/apps/toonTemp/ToonTempApp.qml"}
 
 
+signal temperaturesUpdated0;
 //SIGNALS//
 signal temperaturesUpdated1;
 signal temperaturesUpdated2;
+signal temperaturesUpdated3;
 
 //SIGNALS END//	
 
@@ -92,14 +96,18 @@ signal temperaturesUpdated2;
 		registry.registerWidget("popup", tempRebootPopupUrl, toonTempApp, "tempRebootPopup");
 		registry.registerWidget("screen", toonTempConfigScreenUrl, this, "toonTempConfigScreen");
 		registry.registerWidget("screen", toonTempScreenUrl, this, "toonTempScreen");
+		registry.registerWidget("tile", toonTemptile1Url0, this, null, {thumbLabel: qsTr("toonTemp"), thumbIcon: thumbnailIcon, thumbCategory: "general", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+
 //TILE//
 registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Garage"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
+registry.registerWidget("tile", toonTemptile1Url3, this, null, {thumbLabel: qsTr("Testviawww"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 
 //TILE END//
 //SCREEN//
 registry.registerWidget("screen", toonTempScreenUrl1, this, "toonTempScreen1");
 registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
+registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 
 //SCREEN END//
 	}
@@ -217,15 +225,28 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 						if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Data: "  + JsonObject.result[0].Data)
 						
 						if (JsonObject.status == "OK"){
-							tempCurrent[number] = JsonObject.result[0].Temp
-							if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
-							if(JsonString.indexOf("Humidity")>-1){
-								dht[number] = true
-								humCurrent[number] = JsonObject.result[0].Humidity
-								hidCurrent[number] = JsonObject.result[0].Temp
+							if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Type.toLowerCase(): "  + JsonObject.result[0].Type.toLowerCase())
+							if(JsonObject.result[0].Type.toLowerCase().indexOf("temp")>-1){
+								if (debugOutput) console.log("*********toonTemp readDomoticz  JsonObject.result[0].Type.toLowerCase() found type Temp")
+								units[number]="o"
+								tempCurrent[number] = JsonObject.result[0].Temp
+								if (tempCurrent[number]< -40 || tempCurrent[number]>100) {tempCurrent[number] = -99}
+								if(JsonString.indexOf("Humidity")>-1){
+									dht[number] = true
+									humCurrent[number] = JsonObject.result[0].Humidity
+									hidCurrent[number] = JsonObject.result[0].Temp
+								}else{
+									dht[number] = false
+								}
 							}else{
-								dht[number] = false
+								var checkData = JsonObject.result[0].Data
+								if(checkData != ""){
+									tempCurrent[number] = JsonObject.result[0].Data.split(" ")[0]
+									units[number]= JsonObject.result[0].Data.split(" ")[1]
+									if (debugOutput) console.log("*********toonTemp readDomoticz  units[" + number + "]: "  + units[number])
+								} 
 							}
+
 							if (debugOutput) console.log("*********toonTemp readTemperature  humCurrent[" + number + "]: "  + humCurrent[number])
 							if (debugOutput) console.log("*********toonTemp readTemperature  hidCurrent[" + number + "]: "  + hidCurrent[number])
 							if (debugOutput) console.log("*********toonTemp readTemperature  tempCurrent[" + number + "]: "  + tempCurrent[number])
@@ -338,6 +359,7 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 				if (debugOutput) console.log("*********toonTemp parseData() tempCurrent[" + number + "] : " + parseFloat(tempCurrent[number]))
 				tempDATA[number][minsfromfiveIndex] = parseFloat(tempCurrent[number])
 				if (debugOutput) console.log("*********toonTemp parseData() tempDATA[" + number + "][" + minsfromfiveIndex + "] : " + tempDATA[number][minsfromfiveIndex])
+				temperaturesUpdated0()
 				if (number == 0){temperaturesUpdated1()}
 				if (number == 1){temperaturesUpdated2()}
 				if (number == 2){temperaturesUpdated3()}
@@ -486,6 +508,21 @@ registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
 		}
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
