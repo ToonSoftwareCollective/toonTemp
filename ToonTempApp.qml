@@ -81,6 +81,8 @@ App {
 	
 	FileIO {id: userSettingsFile; source: "file:///mnt/data/tsc/toonTemp_userSettings.json"}
 	FileIO {id: appFile;	source: "file:///HCBv2/qml/apps/toonTemp/ToonTempApp.qml"}
+	FileIO {id: toontemp_mobile;	source: "file:///qmf/www/temperature.html"}
+
 
 
 signal temperaturesUpdated0;
@@ -354,6 +356,7 @@ registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 
 	function parseData(){
 		if (debugOutput) console.log("*********toonTemp parsing data")
+		var sensorWebText = ""
 		for(var number in sensorActive){
 			if (sensorActive[number]){
 				if (debugOutput) console.log("*********toonTemp parseData() tempCurrent[" + number + "] : " + parseFloat(tempCurrent[number]))
@@ -366,10 +369,19 @@ registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 				if (number == 3){temperaturesUpdated4()}
 				if (number == 4){temperaturesUpdated5()}
 				if (number == 5){temperaturesUpdated6()}
+				
+				if(dht[number]){
+					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number] + "-@@-" + hid[number] + "\n";
+				}else{
+					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number]+ "\n";
+				}
 			}
 			if (debugOutput) console.log("*********toonTemp parseData() tempDATA[" + number + "] : " + tempDATA[number])
 		}
+			toontemp_mobile.write(sensorWebText)				    
     }
+
+
 
 	function doData(){
 		if (debugOutput) console.log("*********toonTemp dtime : " + dtime)
