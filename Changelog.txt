@@ -1,5 +1,5 @@
 1.4.6
-- humidity error solved
+- general sensors added in web app
 
 1.4.5
 - added toonTemp to web app
