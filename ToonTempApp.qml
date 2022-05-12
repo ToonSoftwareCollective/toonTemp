@@ -371,7 +371,7 @@ registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 				if (number == 5){temperaturesUpdated6()}
 				
 				if(dht[number]){
-					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number] + "-@@-" + hid[number] + "\n";
+					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number] + "-@@-" + humCurrent[number] + "\n";
 				}else{
 					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number]+ "\n";
 				}
