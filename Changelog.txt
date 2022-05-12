@@ -1,3 +1,6 @@
+1.4.6
+- general sensors added in web app
+
 1.4.5
 - added toonTemp to web app
 

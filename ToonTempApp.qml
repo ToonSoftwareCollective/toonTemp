@@ -371,9 +371,13 @@ registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
 				if (number == 5){temperaturesUpdated6()}
 				
 				if(dht[number]){
-					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number] + "-@@-" + hid[number] + "\n";
+					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number] + "-@@-degr-@@-" + humCurrent[number] + "\n";
 				}else{
-					sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number]+ "\n";
+					if ((units[number]=="0" && domoticzActive[number])||!domoticzActive[number]){
+						sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number]+ "-@@-degr\n";
+					}else{
+						sensorWebText +=  sensorNames[number] + "-@@-" + tempCurrent[number]+ "-@@-" + units[number] + "\n";
+					}
 				}
 			}
 			if (debugOutput) console.log("*********toonTemp parseData() tempDATA[" + number + "] : " + tempDATA[number])
