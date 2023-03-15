@@ -10,38 +10,23 @@ Tile {
 	property string toonHidStr : app.hidCurrent[index]
 	property string sensorNamesStr : app.sensorNames[index]
 	property bool isDHT : app.dht[index]
-	property string unit : app.units[index]
-	
+       	property string unit : app.units[index]	
 	
 	onClicked: {
 			stage.openFullscreen(app.toonTempScreenUrl)
 	}
 
 	Component.onCompleted: {
-		app.temperaturesUpdated4.connect(updateTile);
+		app.temperaturesUpdated3.connect(updateTile);
 	}
 
 	function updateTile() {
-		console.log(app.tempCurrent[index]])
 		toonTempStr = app.tempCurrent[index]
 		toonHumStr = app.humCurrent[index]
 		toonHidStr = app.hidCurrent[index]
 		sensorNamesStr = app.sensorNames[index]
 		unit = app.units[index]
 		isDHT = app.dht[index]
-	}
-
-//IF NOT DHT SENSOR
-
-	Text {
-		id: toonTemp
-		text:  toonTempStr
-		color: dimmableColors.clockTileColor
-		anchors.centerIn: parent
-		horizontalAlignment: Text.AlignHCenter
-		font.pixelSize: dimState ? qfont.clockFaceText : qfont.timeAndTemperatureText
-		font.family: qfont.regular.name
-		visible: !isDHT
 		var textwidth
 		if(isNxt){
 			textwidth = ((parent.width/2) - (toonTempStr.length*32))/(1+(unit.length*4))
@@ -62,13 +47,25 @@ Tile {
 				}
 			}		
 		}
+	}
 
+//IF NOT DHT SENSOR
+
+	Text {
+		id: toonTemp
+		text:  toonTempStr
+		color: dimmableColors.clockTileColor
+		anchors.centerIn: parent
+		horizontalAlignment: Text.AlignHCenter
+		font.pixelSize: dimState ? qfont.clockFaceText : qfont.timeAndTemperatureText
+		font.family: qfont.regular.name
+		visible: !isDHT
 	}
 
     Text {
         id: degree1
         text: unit
-	color: dimmableColors.clockTileColor
+        color: dimmableColors.clockTileColor
         anchors {
             top: toonTemp.top
             left: toonTemp.right
