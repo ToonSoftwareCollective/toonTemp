@@ -41,14 +41,14 @@ Screen {
 	}
 	
 	Component.onCompleted: {
-		console.log( "*********toonTemp toonTempScreen sensorCount: "  + sensorCount)
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[0]: "  + app.tempDATA[0])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[1]: "  + app.tempDATA[1])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[2]: "  + app.tempDATA[2])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[3]: "  + app.tempDATA[3])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[4]: "  + app.tempDATA[4])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[5]: "  + app.tempDATA[5])
-		console.log( "*********toonTemp toonTempScreen app.tempDATA[6]: "  + app.tempDATA[6])
+		//console.log( "*********toonTemp toonTempScreen sensorCount: "  + sensorCount)
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[0]: "  + app.tempDATA[0])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[1]: "  + app.tempDATA[1])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[2]: "  + app.tempDATA[2])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[3]: "  + app.tempDATA[3])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[4]: "  + app.tempDATA[4])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[5]: "  + app.tempDATA[5])
+		//console.log( "*********toonTemp toonTempScreen app.tempDATA[6]: "  + app.tempDATA[6])
 	}
 
 	function updateData() {
