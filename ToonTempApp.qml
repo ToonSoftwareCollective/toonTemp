@@ -87,12 +87,6 @@ App {
 
 signal temperaturesUpdated0;
 //SIGNALS//
-signal temperaturesUpdated1;
-signal temperaturesUpdated2;
-signal temperaturesUpdated3;
-signal temperaturesUpdated4;
-signal temperaturesUpdated5;
-signal temperaturesUpdated6;
 
 //SIGNALS END//	
 
@@ -104,21 +98,10 @@ signal temperaturesUpdated6;
 		registry.registerWidget("tile", toonTemptile1Url0, this, null, {thumbLabel: qsTr("toonTemp"), thumbIcon: thumbnailIcon, thumbCategory: "general", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 
 //TILE//
-registry.registerWidget("tile", toonTemptile1Url1, this, null, {thumbLabel: qsTr("Buiten"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url2, this, null, {thumbLabel: qsTr("Bureau"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url3, this, null, {thumbLabel: qsTr("Test sensor"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url4, this, null, {thumbLabel: qsTr("d"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url5, this, null, {thumbLabel: qsTr("e"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
-registry.registerWidget("tile", toonTemptile1Url6, this, null, {thumbLabel: qsTr("f"), thumbIcon: thumbnailIcon, thumbCategory: "temperature", thumbWeight: 30, baseTileWeight: 10, thumbIconVAlignment: "center"});
 
 //TILE END//
+
 //SCREEN//
-registry.registerWidget("screen", toonTempScreenUrl1, this, "toonTempScreen1");
-registry.registerWidget("screen", toonTempScreenUrl2, this, "toonTempScreen2");
-registry.registerWidget("screen", toonTempScreenUrl3, this, "toonTempScreen3");
-registry.registerWidget("screen", toonTempScreenUrl4, this, "toonTempScreen4");
-registry.registerWidget("screen", toonTempScreenUrl5, this, "toonTempScreen5");
-registry.registerWidget("screen", toonTempScreenUrl6, this, "toonTempScreen6");
 
 //SCREEN END//
 	}
@@ -223,9 +206,11 @@ registry.registerWidget("screen", toonTempScreenUrl6, this, "toonTempScreen6");
     }
 	
 	function readDomoticz(number, IDX) {
-		if (debugOutput) console.log("*********toonTemp start readDomoticz url: " + domoticzURL + "/json.htm?type=devices&rid=" + IDX)
+		//if (debugOutput) console.log("*********toonTemp start readDomoticz url: " + domoticzURL + "/json.htm?type=devices&rid=" + IDX)
+		if (debugOutput) console.log("*********toonTemp start readDomoticz url: " + domoticzURL + "/json.htm?type=command&param=getdevices&rid=" + IDX)
 		var http = new XMLHttpRequest()
-		http.open("GET", domoticzURL + "/json.htm?type=devices&rid=" + IDX, true)
+		//http.open("GET", domoticzURL + "/json.htm?type=devices&rid=" + IDX, true)
+		http.open("GET", domoticzURL + "/json.htm?type=command&param=getdevices&rid=" + IDX, true)
 		http.onreadystatechange = function() {
 			if (http.readyState == XMLHttpRequest.DONE) {
 				if (http.status === 200 || http.status === 300  || http.status === 302) {
@@ -533,6 +518,7 @@ registry.registerWidget("screen", toonTempScreenUrl6, this, "toonTempScreen6");
 		}
     }
 }
+
 
 
 
